@@ -1,3 +1,6 @@
+let rounds = 0;
+let wins = 0;
+
 function computerPlay () {
     let randomValue = Math.random();
     
@@ -12,28 +15,46 @@ function computerPlay () {
     }
 }
 
-function playRound(playerSelection, computerSelection) {
-    playerSelectionLower = playerSelection.toLowerCase();
-    computerSelectionLower = computerSelection.toLowerCase();
+function playRound(e) {
+    let playerSelection = e.target.id;
+    let playerSelectionLower = playerSelection.toLowerCase();
+    let computerSelection = computerPlay();
+    let computerSelectionLower = computerSelection.toLowerCase();
+    const results = document.querySelector('#results')
+
+    if (rounds==5) {
+        wins = 0;
+        rounds =0;
+        const gameover = document.querySelector('#gameover');
+        gameover.textContent = '';
+    }
+
 
     if (playerSelectionLower=='paper' && computerSelectionLower=='rock' || playerSelectionLower=='scissors' && computerSelectionLower=='paper' || playerSelectionLower=='rock' && computerSelectionLower=='scissors') {
-        return  [`You Win this round! ${playerSelection} beats ${computerSelection}!`, 1];
+        wins++
+        rounds++
+        results.textContent =`You Win this round! ${playerSelection} beats ${computerSelection}!`;
     }
     else if (playerSelectionLower=='rock' && computerSelectionLower=='paper' || playerSelectionLower=='paper' && computerSelectionLower=='scissors' || playerSelectionLower=='scissors' && computerSelectionLower=='rock') {
-        return [`You Lose this round! ${computerSelection} beats ${playerSelection}!`, 0];
+        rounds++
+        results.textContent =`You Lose this round! ${computerSelection} beats ${playerSelection}!`;
     }
     else {
-        return  [`Tie! ${playerSelection} ties with ${computerSelection}`, 0];
+        rounds++
+        results.textContent =`Tie! ${playerSelection} ties with ${computerSelection}`;
     }
+    gameover(wins, rounds);
 }
 
-function game() {
-    let wins = 0;
-    for (let i = 0; i<5; i++) {
-        let playerSelection = prompt("Please enter Rock, Paper, or Scissors: ");
-        result = playRound(playerSelection,computerPlay());
-        console.log(result[0]);
-        wins = wins + result[1];
+function gameover (wins, rounds) {
+    const gameover = document.querySelector('#gameover')
+    if (rounds==5 && wins >=3) {
+        return gameover.textContent = `Game Over! You Won ${wins} out of ${rounds}!`;
     }
-    console.log(`You won ${wins} out of 5 games!`)
-}
+    else if (rounds==5 && wins <3) {
+        return gameover.textContent = `Game Over! You Lost ${wins} out of ${rounds}!`;
+    };
+};
+
+const buttons = document.querySelectorAll('.btn');
+buttons.forEach(btn => btn.addEventListener('click', playRound));
